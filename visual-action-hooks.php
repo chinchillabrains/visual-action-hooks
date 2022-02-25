@@ -64,9 +64,15 @@ if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
                 }
                 foreach ( $hooks as $hook ) {
                     add_action( $hook, function () use ($hook) {
+                        if ( is_admin() ) {
+                            return;
+                        }
                         echo '<div class="chilla-visual-hook" data-hook="' . $hook . '"><span class="chilla-visual-hook-name">' . $hook . '</span>';
                     }, -99999999999 );
                     add_action( $hook, function () {
+                        if ( is_admin() ) {
+                            return;
+                        }
                         echo '</div>';
                     }, 99999999999 );
                 }
