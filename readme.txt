@@ -40,3 +40,8 @@ This plugin needs no configuration after installing. Just install the plugin, ac
 
 = 1.0.0 =
 * Initial release.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial release
