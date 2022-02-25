@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Visual Action Hooks
- * Description: Detect & display actions added with "do_action" function
+ * Description: Detect & display actions added with "do_action" from any theme or plugin
  * Version: 1.0.0
- * Author: chinchillabrains
+ * Author: codinghabits
  * Requires at least: 5.0
- * Author URI: https://chinchillabrains.com
+ * Author URI: https://coding-habits.com
  * Text Domain: visual-action-hooks
  * Domain Path: /languages/
  */
