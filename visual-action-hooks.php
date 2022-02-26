@@ -15,10 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use \RecursiveDirectoryIterator;
-use \RecursiveIteratorIterator;
-use \RegexIterator;
-
 if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
     define( 'CVAH_TEXTDOMAIN', 'visual-action-hooks' );
     define( 'CVAH_PREFIX', 'cvah' );
@@ -60,6 +56,7 @@ if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
                 $hooks = get_transient( 'chilla_detected_action_hooks' );
                 if ( empty( $hooks ) ) {
                     $hooks = $this->get_action_hooks();
+                    $hooks = filter_var_array( $hooks, FILTER_SANITIZE_STRING, false );
                     set_transient( 'chilla_detected_action_hooks', $hooks, 60 * 60 * 24 );
                 }
                 foreach ( $hooks as $hook ) {
@@ -67,7 +64,7 @@ if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
                         if ( is_admin() ) {
                             return;
                         }
-                        echo '<div class="chilla-visual-hook" data-hook="' . $hook . '"><span class="chilla-visual-hook-name">' . $hook . '</span>';
+                        echo '<div class="chilla-visual-hook" data-hook="' . esc_attr( $hook ) . '"><span class="chilla-visual-hook-name">' . esc_html( $hook ) . '</span>';
                     }, -99999999999 );
                     add_action( $hook, function () {
                         if ( is_admin() ) {
@@ -87,7 +84,7 @@ if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
         }
 
         public function get_hooks_from_dir ( $dir ) {
-            $php_files = $this->rsearch( $dir, "/^.*\.php$/" );
+            $php_files = $this->recursive_search( $dir, "/^.*\.php$/" );
             $all_hooks = Array();
             foreach ($php_files as $file) {
                 $regexp = '/do_action\(\s*(?:\'|\")(.*?)(?:\'|\").*\)/';
@@ -104,15 +101,15 @@ if ( ! class_exists( 'Visual_Action_Hooks' ) ) {
             return $all_hooks;
         }
 
-        private function rsearch($folder, $pattern) {
-        $dir = new RecursiveDirectoryIterator($folder);
-        $ite = new RecursiveIteratorIterator($dir);
-        $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
-        $fileList = array();
-        foreach($files as $file) {
-            $fileList[] = $file[0];
-        }
-        return $fileList;
+        private function recursive_search($folder, $pattern) {
+            $dir = new RecursiveDirectoryIterator($folder);
+            $ite = new RecursiveIteratorIterator($dir);
+            $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
+            $fileList = array();
+            foreach($files as $file) {
+                $fileList[] = $file[0];
+            }
+            return $fileList;
         }
 
         public function toolbar_link( $wp_admin_bar ) {
